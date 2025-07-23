@@ -1,0 +1,186 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #eef2f5;
+  margin: 0;
+  padding: 0;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 32px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* ✅ Panel kiri lebih lebar (60%) */
+.left-panel {
+  flex: 3;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Panel kanan lebih sempit (40%) */
+.right-panel {
+  flex: 2;
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.highlight-box {
+  font-size: 20px;
+  font-weight: normal;
+  background-color: #ffe082;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+
+  text-align: center;           
+  display: flex;                
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  margin-top: 10px;
+  margin-right: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  background-color: #2196f3;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ✅ Form input tidak terlalu lebar di panel kanan */
+form input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+form button {
+  background-color: #4caf50;
+}
+
+.queue-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.stat-box {
+  flex: 1;
+  padding: 15px;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: normal;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Tombol Add di tengah */
+#showFormBtn {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#showFormBtn:hover {
+  background-color: #45a049;
+}
+
+.queue-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.queue-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.button-group button {
+  padding: 6px 10px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.highlight-box.empty {
+  color: #999;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+.empty-queue-msg {
+  color: #777;
+  font-style: italic;
+  margin-bottom: 10px;
+  text-align: center;
+  display: none;
+}

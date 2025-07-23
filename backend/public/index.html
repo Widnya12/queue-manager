@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Queue Manager</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1 class="page-title">Queue Manager Deluxe</h1>
+  <div class="container">
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <h2>Queue Stats</h2>
+      <div class="queue-stats">
+        <div class="stat-box" id="queueBox">
+          <p id="queueCount">Total in Queue: 0</p>
+        </div>
+        <div class="stat-box" id="servingBox">
+          <p id="servingCount">Serving: 0</p>
+        </div>
+      </div>
+
+      <h2>Now Serving</h2>
+      <div id="nowServing" class="highlight-box">-</div>
+
+      <h2>Queue List</h2>
+      <p id="queueEmptyMsg" class="empty-queue-msg">No one in queue</p>
+      <ul id="queueList"></ul>
+
+      <button id="nextBtn" onclick="nextInQueue()">Next</button>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <h2>Add to Queue</h2>
+  
+      <!-- Tombol awal -->
+      <button id="showFormBtn">+ Add to Queue</button>
+
+      <!-- Form disembunyikan awalnya -->
+      <form id="queueForm" style="display: none;">
+        <input type="text" id="name1" placeholder="Name 1" required />
+        <input type="text" id="name2" placeholder="Name 2 (optional)" />
+        <div style="margin-top: 10px;">
+          <button type="submit">Submit</button>
+          <button type="button" id="cancelBtn" style="margin-left: 10px; background-color: #ccc;">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+
+  <script>
+    const API_URL = "http://localhost:3000";
+
+    async function fetchQueue() {
+      const res = await fetch(`${API_URL}/queue`);
+      const data = await res.json();
+      const list = document.getElementById("queueList");
+      const serving = document.getElementById("nowServing");
+
+      list.innerHTML = "";
+
+      if (data.length > 0) {
+        serving.textContent = data[0].name;
+        serving.classList.remove("empty");
+      } else {
+        serving.textContent = "No one is being served";
+        serving.classList.add("empty");
+      }
+
+      const emptyMsg = document.getElementById("queueEmptyMsg");
+      if (data.length <= 1) {
+        emptyMsg.style.display = "block";
+      } else {
+        emptyMsg.style.display = "none";
+      }
+
+      data.forEach((item, index) => {
+        if (index === 0) return; // Lewati item pertama (sudah di-now serving)
+
+        const li = document.createElement("li");
+        li.classList.add("queue-item");
+        const span = document.createElement("span");
+        span.textContent = `#${item.number} - ${item.name}`;
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.style.marginLeft = "10px";
+        editBtn.style.backgroundColor = "#ff9800";
+        editBtn.onclick = async () => {
+          const newName = prompt("Edit name:", item.name);
+          if (newName && newName.trim()) {
+            await fetch(`${API_URL}/queue/${item.id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name: newName.trim() })
+            });
+            fetchQueue();
+          }
+        };
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.textContent = "Cancel";
+        cancelBtn.style.marginLeft = "10px";
+        cancelBtn.style.backgroundColor = "#f44336";
+        cancelBtn.onclick = async () => {
+          const ok = confirm(`Cancel "${item.name}" from queue?`);
+          if (ok) {
+            await fetch(`${API_URL}/queue/${item.id}`, { method: "DELETE" });
+            fetchQueue();
+          }
+        };
+
+        const buttonGroup = document.createElement("div");
+        buttonGroup.classList.add("button-group");
+        buttonGroup.appendChild(editBtn);
+        buttonGroup.appendChild(cancelBtn);
+
+        li.appendChild(span);
+        li.appendChild(buttonGroup);
+        list.appendChild(li);
+      });
+
+      document.getElementById("queueCount").textContent = `Total Queue: ${data.length > 1 ? data.length - 1 : 0}`;
+      document.getElementById("servingCount").textContent = `Serving: ${data.length > 0 ? 1 : 0}`;
+
+      const nextBtn = document.getElementById("nextBtn");
+      if (data.length === 0) {
+      nextBtn.style.display = "none";
+      } else {
+      nextBtn.style.display = "block";
+      }
+    }
+    
+    async function nextInQueue() {
+      const resQueue = await fetch(`${API_URL}/queue`);
+      const currentQueue = await resQueue.json();
+
+      if (currentQueue.length === 0) {
+        alert("Queue is empty");
+        return;
+      }
+
+      const firstInLine = currentQueue[0];
+
+      await fetch(`${API_URL}/next`, { method: "POST" });
+
+      alert(`Calling: ${firstInLine.name}`);
+
+      fetchQueue();
+    }
+
+    document.getElementById("queueForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name1 = document.getElementById("name1").value.trim();
+      const name2 = document.getElementById("name2").value.trim();
+      if (!name1 && !name2) return;
+
+      const name = name2 ? `${name1} & ${name2}` : name1;
+
+      await fetch(`${API_URL}/queue`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+
+      document.getElementById("queueForm").reset();
+      fetchQueue();
+    });
+
+    // Toggle form visibility
+      const showFormBtn = document.getElementById("showFormBtn");
+      const queueForm = document.getElementById("queueForm");
+      const cancelBtn = document.getElementById("cancelBtn");
+
+      showFormBtn.addEventListener("click", () => {
+        showFormBtn.style.display = "none";
+        queueForm.style.display = "block";
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        queueForm.style.display = "none";
+        showFormBtn.style.display = "block";
+        document.getElementById("name1").value = "";
+        document.getElementById("name2").value = "";
+      });
+
+    fetchQueue();
+  </script>
+</body>
+</html>
