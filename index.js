@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
@@ -8,7 +7,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
 
 let queue = [];
 
@@ -18,31 +16,23 @@ app.get("/queue", (req, res) => {
 
 app.post("/queue", (req, res) => {
   const { name } = req.body;
-  const newEntry = {
-    id: uuidv4(),
-    number: queue.length + 1,
-    name
-  };
-  queue.push(newEntry);
-  res.json(newEntry);
+  const number = queue.length + 1;
+  const id = uuidv4();
+  queue.push({ id, name, number });
+  res.status(201).json({ id, name, number });
 });
 
 app.post("/next", (req, res) => {
-  const next = queue.shift();
-  queue = queue.map((entry, i) => ({ ...entry, number: i + 1 }));
-  res.json(next || {});
-});
-
-app.delete("/queue", (req, res) => {
-  queue = [];
-  res.json({ success: true });
+  if (queue.length > 0) {
+    queue.shift();
+  }
+  res.status(200).json({ success: true });
 });
 
 app.delete("/queue/:id", (req, res) => {
   const { id } = req.params;
   queue = queue.filter(entry => entry.id !== id);
-  queue = queue.map((entry, i) => ({ ...entry, number: i + 1 }));
-  res.json({ success: true });
+  res.status(200).json({ success: true });
 });
 
 app.put("/queue/:id", (req, res) => {
@@ -55,6 +45,11 @@ app.put("/queue/:id", (req, res) => {
   } else {
     res.status(404).json({ error: "Not found" });
   }
+});
+
+// ✅ Tambahan route root untuk Railway
+app.get("/", (req, res) => {
+  res.send("🎉 Queue Backend is running!");
 });
 
 app.listen(PORT, () =>
