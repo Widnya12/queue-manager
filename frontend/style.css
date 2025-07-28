@@ -184,3 +184,66 @@ form button {
   text-align: center;
   display: none;
 }
+
+/* Responsive styling untuk mobile */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .left-panel,
+  .right-panel {
+    width: 100%;
+  }
+
+  .queue-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stat-box {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .highlight-box {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  .queue-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button-group {
+    justify-content: space-between;
+  }
+
+  .button-group button {
+    flex: 1;
+    font-size: 14px;
+  }
+
+  #showFormBtn {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  form input {
+    font-size: 16px;
+  }
+
+  form button {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  h2, .page-title {
+    text-align: center;
+    font-size: 24px;
+  }
+}
